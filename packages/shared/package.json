@@ -1,0 +1,15 @@
+{
+  "name": "shared",
+  "version": "0.0.0",
+  "description": "> TODO: 全局相关的类型顶益和公共方法",
+  "author": "不动声色 <1609059419@qq.com>",
+  "homepage": "https://github.com/render-ydb/render-react#readme",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/render-ydb/render-react.git"
+  },
+  "bugs": {
+    "url": "https://github.com/render-ydb/render-react/issues"
+  }
+}
