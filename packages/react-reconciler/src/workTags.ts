@@ -6,7 +6,7 @@ export type WorkTag =
 
 // 函数组件
 export const FunctionConponent = 0;
-// 应用根节点, 比如ReactDom.render(<APP/>)中APP组件
+// 应用根节点, 比如ReactDom.render(rootElement,<APP/>)中Element对应的fiber节点类型
 export const HostRoot = 3;
 // 比如一个<div></div>组件对应的类型
 export const HostComponent = 5;
