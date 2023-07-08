@@ -29,7 +29,7 @@ export const jsx = (type: ElementType, config: any, ...maybeChildren: any) => {
         ref = val;
       }
     }
-    if (Object.prototype.hasOwnProperty.call(config, key)) {
+    if (Object.prototype.hasOwnProperty.call(config, prop)) {
       props[prop] = val;
     }
   }
@@ -45,4 +45,20 @@ export const jsx = (type: ElementType, config: any, ...maybeChildren: any) => {
   return ReactElement(type, key, ref, props)
 }
 
-export const jsxDev = jsx;
+export const jsxDEV = (type: ElementType, config: any, key: Key) => {
+  let ref: Ref = null;
+  const props: Props = {};
+  for (const prop in config) {
+    const val = config[prop];
+    if (prop === 'ref') {
+      if (val !== undefined) {
+        ref = val;
+      }
+      continue;
+    }
+    if (Object.prototype.hasOwnProperty.call(config, prop)) {
+      props[prop] = val;
+    }
+  }
+  return ReactElement(type, key, ref, props)
+};
