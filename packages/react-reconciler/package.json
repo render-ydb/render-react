@@ -1,0 +1,23 @@
+{
+  "name": "react-reconciler",
+  "version": "0.0.0",
+  "description": "协调器",
+  "author": "不动声色 <1609059419@qq.com>",
+  "homepage": "https://github.com/render-ydb/render-react#readme",
+  "license": "ISC",
+  "module": "index.ts",
+ 
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/render-ydb/render-react.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/render-ydb/render-react/issues"
+  },
+  "dependencies": {
+    "shared":"file:../shared"
+  }
+}
