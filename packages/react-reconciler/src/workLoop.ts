@@ -5,7 +5,7 @@ import { HostRoot } from './workTags';
 
 let workInProgress: FiberNode | null = null;
 
-
+// 初始化workInProgress 在这里是hostRootFiber
 const prepareFreshStack = (root: FiberRootNode) => {
   workInProgress = createWorkInProgress(root.current, {});
 }
@@ -49,7 +49,8 @@ export const scheduleUpdateOnFiber = (fiber: FiberNode) => {
   renderRoot(root as FiberRootNode)
 }
 
-const markUpdateFromFiberToRoot = (fiber: FiberNode): FiberRootNode|null => {
+// 找到fiberRootNode
+const markUpdateFromFiberToRoot = (fiber: FiberNode): FiberRootNode | null => {
   let node = fiber;
   let parent = node.return;
   while (parent !== null) {
@@ -64,7 +65,6 @@ const markUpdateFromFiberToRoot = (fiber: FiberNode): FiberRootNode|null => {
 
 
 const renderRoot = (root: FiberRootNode) => {
-  // 初始化当前fiber
   prepareFreshStack(root);
   // 开始递归
   do {
@@ -72,7 +72,9 @@ const renderRoot = (root: FiberRootNode) => {
       workLoop();
       break;
     } catch (e) {
-      console.warn('workLoop发生错误', e);
+      if (__DEV__) {
+        console.warn('workLoop发生错误', e);
+      }
       workInProgress = null;
     }
   } while (true);
