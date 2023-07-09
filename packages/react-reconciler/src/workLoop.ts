@@ -2,7 +2,8 @@ import { FiberNode, FiberRootNode, createWorkInProgress } from './fiber';
 import { beginWork } from './beginWork';
 import { completeWork } from './completeWork';
 import { HostRoot } from './workTags';
-import { MuationMask, NoFlags } from './fiberFlags';
+import { MutationMask, NoFlags } from './fiberFlags';
+import { commitMutationEffects } from './commitWork';
 
 let workInProgress: FiberNode | null = null;
 
@@ -99,12 +100,13 @@ const commitRoot = (root: FiberRootNode) => {
   root.finishedWork = null;
 
   // 判断是否存在3个子阶段需要执行的操作
-  const subtreeHasEffect = (finishedWork.subtreeFlags & MuationMask) !== NoFlags;
-  const rootHasEffect = (finishedWork.flags & MuationMask) !== NoFlags;
+  const subtreeHasEffect = (finishedWork.subtreeFlags & MutationMask) !== NoFlags;
+  const rootHasEffect = (finishedWork.flags & MutationMask) !== NoFlags;
 
   if (subtreeHasEffect || rootHasEffect) {
     // 1. beforeMuation
     // 2. muation
+    commitMutationEffects(finishedWork);
     root.current = finishedWork;
     // 3. layout
 

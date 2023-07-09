@@ -16,3 +16,10 @@ export const createTextInstance = (...args:any):FiberNode=>{
 export const appendInitialChild = (...args:any)=>{
     return {} as FiberNode
 }
+
+/* eslint-disable */
+// @ts-ignore
+export const appendChildToContainer = (...args:any)=>{
+    return {} as FiberNode
+}
+
