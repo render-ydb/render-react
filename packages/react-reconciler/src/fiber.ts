@@ -20,6 +20,7 @@ export class FiberNode {
   memoizedState: any;
   alternate: FiberNode | null; // 用户current fiber和 workInProgress filber替换，相互指向
   flags: Flags; // fibernode 操作标记
+  subtreeFlags: Flags;
   updateQueue: unknown;
 
   constructor(tag: WorkTag, pendingProps: Props, key: Key) {
@@ -46,6 +47,7 @@ export class FiberNode {
     this.alternate = null;
     // 副作用
     this.flags = NoFlags;
+    this.subtreeFlags = NoFlags;
   }
 }
 
@@ -53,7 +55,7 @@ export class FiberNode {
 export class FiberRootNode {
   container: Container;
   current: FiberNode;
-  finishedWork: FiberNode | null; // 指向整个递归更新的HostRootFiber
+  finishedWork: FiberNode | null; // 指向整个递归更新完成的HostRootFiber
   constructor(container: Container, hostRootFiber: FiberNode) {
     this.container = container;
     this.current = hostRootFiber;
@@ -78,6 +80,7 @@ export const createWorkInProgress = (
   } else { // 更新
     wip.pendingProps = pendingProps;
     wip.flags = NoFlags; // 清除副作用
+    wip.subtreeFlags = NoFlags;
   }
   wip.type = current.type;
   wip.updateQueue = current.updateQueue;
