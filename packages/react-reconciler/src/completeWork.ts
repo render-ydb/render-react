@@ -45,7 +45,8 @@ export const completeWork = (wip: FiberNode) => {
       return null
   }
 }
-
+// wip插入到parent，还需要插入wip的其他sibling
+// function A(){retrun <div></div>}插入的应该是div
 function appendAllChildren(parent: FiberNode, wip: FiberNode) {
   let node = wip.child;
 
@@ -62,9 +63,10 @@ function appendAllChildren(parent: FiberNode, wip: FiberNode) {
       return;
     }
 
+    // wip的sibling插入的情况
     while (node.sibling === null) {
       if (node.return === null || node.return === wip) {
-        // 死循环？ 这里的return有问题，会死循环
+        // 死循环？ 这里的return有问题，会死循环 在考虑一下
         return;
       }
       node = node?.return;

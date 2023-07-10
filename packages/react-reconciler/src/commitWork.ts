@@ -17,10 +17,11 @@ export const commitMutationEffects = (finishedWork: FiberNode) => {
             child !== null
     ) {
       nextEffect = child;
-    } else { // 不包含subtreeFlags副作用 或者 到了叶子节点
-      // 向上遍历 先找兄弟，兄弟找不到，在找父节点
+    } else {
+      // 进入这里说明当前fiber没有subtreeFlags副作用了，也就是当前节点可能包含flags或者找到叶子节点
       while (nextEffect !== null) {
         commitMutationEffectOnFiber(nextEffect);
+        // 看看是不是兄弟节点有副作用
         const sibling: FiberNode | null = nextEffect.sibling;
         if (sibling !== null) {
           nextEffect = sibling;
@@ -32,6 +33,7 @@ export const commitMutationEffects = (finishedWork: FiberNode) => {
   }
 }
 
+// 处理符合条件的fiber的flags
 const commitMutationEffectOnFiber = (finishedWork: FiberNode) => {
   const flags = finishedWork.flags;
 
@@ -87,10 +89,12 @@ function appendPlacementNodeIntoContainer(
     appendChildToContainer(finishedWork.stateNode, hostParent);
     return;
   }
-  // 否则 向下遍历，找到符合条件的fiber
+
+  // 可能是<APP/> 这种类型的组件，需要寻找其child
   const child = finishedWork.child;
   if (child !== null) {
     appendPlacementNodeIntoContainer(child, hostParent);
+    // 还需要把child的兄弟节点也插入到hostParent中去，
     let sibling = child.sibling;
     while (sibling !== null) {
       appendPlacementNodeIntoContainer(sibling, hostParent);
