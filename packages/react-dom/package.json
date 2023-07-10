@@ -1,0 +1,16 @@
+{
+  "name": "react-dom",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "不动声色 <1609059419@qq.com>",
+  "homepage": "https://github.com/render-ydb/render-react#readme",
+  "license": "ISC",
+  "module": "index.ts",
+  "bugs": {
+    "url": "https://github.com/render-ydb/render-react/issues"
+  },
+  "dependencies": {
+    "shared":"file:../shared",
+    "react-reconciler":"file:../react-reconciler"
+  }
+}

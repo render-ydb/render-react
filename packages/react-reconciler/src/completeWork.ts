@@ -1,7 +1,7 @@
 import { FiberNode } from './fiber';
 import { NoFlags } from './fiberFlags';
 import { HostComponent, HostRoot, HostText } from './workTags';
-import { appendInitialChild, createInstance, createTextInstance } from 'hostConfig';
+import { Container, appendInitialChild, createInstance, createTextInstance } from 'hostConfig';
 
 // 递归中的归阶段
 // 对于Host类型fiberNode：构建离屏DOM树
@@ -47,7 +47,7 @@ export const completeWork = (wip: FiberNode) => {
 }
 // wip插入到parent，还需要插入wip的其他sibling
 // function A(){retrun <div></div>}插入的应该是div
-function appendAllChildren(parent: FiberNode, wip: FiberNode) {
+function appendAllChildren(parent: Container, wip: FiberNode) {
   let node = wip.child;
 
   while (node !== null) {

@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "build:dev": "rimraf dist && rollup  --bundleConfigAsCjs --config scripts/rollup/react.config.js",
+    "build:dev": "rimraf dist && rollup  --bundleConfigAsCjs --config scripts/rollup/dev.config.js",
     "lint": "lint-staged",
     "prepublishOnly": "npm run lint"
   },
@@ -19,6 +19,7 @@
     ]
   },
   "devDependencies": {
+    "@rollup/plugin-alias": "^5.0.0",
     "@rollup/plugin-commonjs": "^25.0.2",
     "@rollup/plugin-replace": "^5.0.2",
     "lerna": "^4.0.0",

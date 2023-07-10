@@ -14,7 +14,7 @@ export const commitMutationEffects = (finishedWork: FiberNode) => {
     // 当前fiber节点上存在副作用，继续向下遍历
     if (
       (nextEffect.subtreeFlags & MutationMask) !== NoFlags &&
-            child !== null
+      child !== null
     ) {
       nextEffect = child;
     } else {
@@ -52,12 +52,13 @@ const commitPlacement = (finishedWork: FiberNode) => {
   // parent Dom
   const hostParent = getHostParent(finishedWork);
   // finishedWork Dom
-  appendPlacementNodeIntoContainer(finishedWork, hostParent)
-
+  if (hostParent !== null) {
+    appendPlacementNodeIntoContainer(finishedWork, hostParent)
+  }
 }
 
 // 寻找当前fiber节点对应的DOM可以插入的最近父节点（可能是祖先节点）
-const getHostParent = (fiber: FiberNode) => {
+const getHostParent = (fiber: FiberNode): Container | null => {
   let parent = fiber.return;
   while (parent) {
     const parentTag = parent.tag;
@@ -73,6 +74,7 @@ const getHostParent = (fiber: FiberNode) => {
   if (__DEV__) {
     console.warn('未找到 host parent')
   }
+  return null
 }
 
 function appendPlacementNodeIntoContainer(
@@ -84,9 +86,9 @@ function appendPlacementNodeIntoContainer(
   // 满足条件直接插入
   if (
     (finishedWork.tag === HostComponent) ||
-        (finishedWork.tag === HostText)
+    (finishedWork.tag === HostText)
   ) {
-    appendChildToContainer(finishedWork.stateNode, hostParent);
+    appendChildToContainer(hostParent, finishedWork.stateNode);
     return;
   }
 
