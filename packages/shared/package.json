@@ -11,5 +11,8 @@
   },
   "bugs": {
     "url": "https://github.com/render-ydb/render-react/issues"
+  },
+  "dependencies": {
+    "react":"file:../react"
   }
 }

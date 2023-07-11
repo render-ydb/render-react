@@ -12,5 +12,8 @@
   "dependencies": {
     "shared":"file:../shared",
     "react-reconciler":"file:../react-reconciler"
+  },
+  "peerDependencies": {
+    "react":"file:../react"
   }
 }
