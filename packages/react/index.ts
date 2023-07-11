@@ -1,7 +1,7 @@
 import currentDispatcher, { Dispatcher, resolveDispatcher } from './src/currentDispatcher'
 import { jsxDEV } from './src/jsx'
 
-export const useState: Dispatcher['useState'] = (initialState)=>{
+export const useState: Dispatcher['useState'] = (initialState) => {
   const dispatcher = resolveDispatcher();
   return dispatcher.useState(initialState)
 }
