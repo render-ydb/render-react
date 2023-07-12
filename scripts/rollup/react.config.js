@@ -15,7 +15,7 @@ export default [
         input: path.join(pkgPath, module),
         output: {
             file: path.join(pkgDistPath, 'index.js'),
-            name: 'index.js',
+            name: 'React',
             format: 'umd'
         },
         plugins:[

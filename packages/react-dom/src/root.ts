@@ -6,7 +6,7 @@ export function createRoot(container: Container) {
   const root = createContainer(container);
   return {
     render(element: ReactElementType) {
-      updateConintaer(element, root)
+      return updateConintaer(element, root)
     },
   }
 }

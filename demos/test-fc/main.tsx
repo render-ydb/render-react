@@ -6,7 +6,7 @@ const App = () => {
   //@ts-ignore
   window.setNum =setNum;
   return (
-    // @ts-ignore
+  
     <div key={1111}>{num}</div>
   )
 }

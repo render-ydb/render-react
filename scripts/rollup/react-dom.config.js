@@ -17,12 +17,12 @@ export default [
         output: [
             {
                 file: path.join(pkgDistPath, 'index.js'),
-                name: 'index.js',
+                name: 'ReactDom',
                 format: 'umd'
             },
             {
                 file: path.join(pkgDistPath, 'clinet.js'),
-                name: 'clinet.js',
+                name: 'clinet',
                 format: 'umd'
             }
         ],
@@ -47,6 +47,20 @@ export default [
                     },
                 })
             })
+        ]
+    },
+    {
+        input: path.join(pkgPath, 'test-utils.ts'),
+        output: [
+            {
+                file: path.join(pkgDistPath, 'test-utils.js'),
+                name: 'test-utils',
+                format: 'umd'
+            },
+        ],
+        external: ['react-dom','react'],
+        plugins: [
+            ...getBaseRollupPlugins(),
         ]
     }
 ]
