@@ -1,7 +1,11 @@
 import { FiberNode } from './fiber';
-import { NoFlags } from './fiberFlags';
+import { NoFlags, Update } from './fiberFlags';
 import { FunctionConponent, HostComponent, HostRoot, HostText } from './workTags';
 import { Container, appendInitialChild, createInstance, createTextInstance } from 'hostConfig';
+
+function markUpdate(fiber: FiberNode) {
+  fiber.flags |= Update;
+}
 
 // 递归中的归阶段
 // 对于Host类型fiberNode：构建离屏DOM树
@@ -15,6 +19,8 @@ export const completeWork = (wip: FiberNode) => {
 
       if (current !== null && wip.stateNode) {
         // update
+
+
       } else { // mount阶段
         // 1. 构建DOM树
         const instance = createInstance(wip.type, newProps)
@@ -27,6 +33,12 @@ export const completeWork = (wip: FiberNode) => {
     case HostText:
       if (current !== null && wip.stateNode) {
         // update
+        const oldText = current.memoizedProps.content;
+        const nexText = newProps.content;
+        if (oldText !== nexText) {
+          markUpdate(wip);
+        }
+
       } else { // mount阶段
         // 1. 构建DOM树
         const instance = createTextInstance(newProps.content)
