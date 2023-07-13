@@ -12,7 +12,7 @@ export const __SECRET__INTERNALS__DO_NOT__USE__OR__YOU__WILL_FIRED = {
 }
 
 // TODO 根据开发环境区分使用jsx还是jsxDev
-export const createElement = jsx;
+export const createElement = jsxDEV;
 
 export const isValidElement = isValidElementFn
 

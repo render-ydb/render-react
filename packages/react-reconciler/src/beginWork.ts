@@ -41,6 +41,7 @@ function updateHostRoot(wip: FiberNode) {
 
   const nextChildren = wip.memoizedState;
   reconcileChildren(wip, nextChildren);
+
   return wip.child;
 }
 
@@ -53,12 +54,14 @@ function updateHostComponent(wip: FiberNode) {
 }
 
 function updateFunctionComponent(wip: FiberNode) {
+  // 更新完了全局useState的memoizedState和复用之前的dispatch
+  // 也就是为什么使用useState的值的数据都发生改变了
   const nextChildren = renderWithHooks(wip);
   reconcileChildren(wip, nextChildren);
   return wip.child;
 }
 
-
+// 关键点还是在这儿呀
 function reconcileChildren(wip: FiberNode, children: ReactElementType | null) {
   const current = wip.alternate;
 

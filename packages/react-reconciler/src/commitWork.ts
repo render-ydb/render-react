@@ -54,7 +54,7 @@ const commitMutationEffectOnFiber = (finishedWork: FiberNode) => {
         commitDeletion(childToDelete)
       })
     }
-    commitUpdate(finishedWork);
+    commitDeletion(finishedWork);
     finishedWork.flags &= ~ChildDeletion;
   }
 }
@@ -100,6 +100,7 @@ function commitDeletion(childToDelete: FiberNode) {
       removeChild((rootHostNode as FiberNode).stateNode, hostParent)
     }
   }
+  // GC
   childToDelete.return = null;
   childToDelete.child = null;
 }

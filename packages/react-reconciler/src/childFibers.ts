@@ -51,7 +51,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
     }
 
 
-    // mount 根据ReactElement创建一个fiber，并返回
+    // 根据ReactElement创建一个fiber，并返回
     const fiber = createFiberFromElement(element);
     fiber.return = returnFiber;
     return fiber
@@ -121,6 +121,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
     // 兜底删除
     if (currentFiber) {
       deleteChild(returnFiber, currentFiber);
+      return null;
     }
 
     if (__DEV__) {

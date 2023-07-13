@@ -20,7 +20,6 @@ export const completeWork = (wip: FiberNode) => {
       if (current !== null && wip.stateNode) {
         // update
 
-
       } else { // mount阶段
         // 1. 构建DOM树
         const instance = createInstance(wip.type, newProps)

@@ -73,7 +73,7 @@ export const createWorkInProgress = (
   let wip = current.alternate;
   if (wip === null) {
     // mount 首屏渲染
-    wip = new FiberNode(current.tag, current.pendingProps, current.key);
+    wip = new FiberNode(current.tag, pendingProps, current.key);
     wip.stateNode = current.stateNode;
 
     wip.alternate = current;
