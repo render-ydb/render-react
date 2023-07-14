@@ -1,3 +1,4 @@
+import { updateFiberProps } from 'react-dom/src/SyntheticEvent';
 import { FiberNode } from './fiber';
 import { NoFlags, Update } from './fiberFlags';
 import { FunctionConponent, HostComponent, HostRoot, HostText } from './workTags';
@@ -19,6 +20,7 @@ export const completeWork = (wip: FiberNode) => {
 
       if (current !== null && wip.stateNode) {
         // update
+        updateFiberProps(wip.stateNode, newProps);
 
       } else { // mount阶段
         // 1. 构建DOM树
