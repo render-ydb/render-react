@@ -20,9 +20,17 @@ const App = () => {
       </div>
   )
 }
+const jsx = (
+  <ul>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+);
+console.log("jsx",App)
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   // @ts-ignore
-  <App h="1" />
+  jsx
 )
