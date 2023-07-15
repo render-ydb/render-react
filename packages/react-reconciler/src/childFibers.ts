@@ -15,7 +15,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
     const deletions = returnFiber.deletions;
     if (deletions === null) {
       returnFiber.deletions = [childToDelete];
-      returnFiber.flags != ChildDeletion;
+      returnFiber.flags |= ChildDeletion;
     } else {
       returnFiber.deletions?.push(childToDelete);
     }
@@ -26,6 +26,9 @@ function ChildReconciler(shouldTrackEffects: boolean) {
     returnFiber: FiberNode,
     currentFirstChild: FiberNode | null,
   ) {
+    if (!shouldTrackEffects) {
+      return;
+    }
     let childToDelete = currentFirstChild;
     while (childToDelete !== null) {
       deleteChild(returnFiber, childToDelete);
@@ -39,8 +42,8 @@ function ChildReconciler(shouldTrackEffects: boolean) {
     element: ReactElementType,
   ) {
     // update
+    const key = element.key;
     while (currentFiber !== null) {
-      const key = element.key;
       if (currentFiber.key === key) { // key相同
         if (element.$$typeof === REACT_ELEMENT_TYPE) {
           if (currentFiber.type === element.type) { // type相同

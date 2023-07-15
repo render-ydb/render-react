@@ -1,7 +1,7 @@
 import { FiberNode, FiberRootNode } from './fiber';
 import { ChildDeletion, MutationMask, NoFlags, Placement, Update } from './fiberFlags';
 import { FunctionConponent, HostComponent, HostRoot, HostText } from './workTags';
-import { Container, appendChildToContainer, commitUpdate, removeChild } from 'hostConfig';
+import { Container, Instance, appendChildToContainer, commitUpdate, insertChildToContainer, removeChild } from 'hostConfig';
 
 let nextEffect: FiberNode | null = null;
 
@@ -54,7 +54,6 @@ const commitMutationEffectOnFiber = (finishedWork: FiberNode) => {
         commitDeletion(childToDelete)
       })
     }
-    commitDeletion(finishedWork);
     finishedWork.flags &= ~ChildDeletion;
   }
 }
@@ -81,21 +80,20 @@ function commitDeletion(childToDelete: FiberNode) {
         return;
       case FunctionConponent:
         // TODO 解绑ref 处理useEffect的unmount回调处理
-        return null;
+        return;
 
       default:
         if (__DEV__) {
           console.warn('未实现的ummount', unmountFiber);
 
         }
-        return null;
     }
   });
 
   // 移除rootHostNode的DOM
   if (rootHostNode !== null) {
     const hostParent = getHostParent(childToDelete);
-    if (hostParent) {
+    if (hostParent !== null) {
       // 应该是传入stateNode
       removeChild((rootHostNode as FiberNode).stateNode, hostParent)
     }
@@ -143,9 +141,48 @@ const commitPlacement = (finishedWork: FiberNode) => {
 
   // parent Dom
   const hostParent = getHostParent(finishedWork);
+
+  // host sibling
+  const sibling = getHostSibling(finishedWork);
+
   // finishedWork Dom
   if (hostParent !== null) {
-    appendPlacementNodeIntoContainer(finishedWork, hostParent)
+    insertOrAppendPlacementNodeIntoContainer(finishedWork, hostParent, sibling)
+  }
+}
+
+function getHostSibling(fibber: FiberNode): Instance | null {
+  let node: FiberNode = fibber;
+
+  findSibling: while (true) {
+
+    while (node.sibling === null) {
+      const parent = node.return;
+      if (parent === null || parent.tag === HostComponent || parent.tag === HostText
+      ) {
+        return null;
+      }
+      node = parent;
+    }
+
+    node.sibling.return = node.return;
+    node = node.sibling;
+
+    while (node.tag !== HostText && node.tag !== HostComponent) {
+      // 向下遍历
+      if ((node.flags & Placement) !== NoFlags) { // 当前节点不稳定
+        continue findSibling;
+      }
+      if (node.child === null) {
+        continue findSibling;
+      } else {
+        node.child.return = node;
+        node = node.child;
+      }
+    }
+    if ((node.flags & Placement) === NoFlags) {
+      return node.stateNode
+    }
   }
 }
 
@@ -169,9 +206,10 @@ const getHostParent = (fiber: FiberNode): Container | null => {
   return null
 }
 
-function appendPlacementNodeIntoContainer(
+function insertOrAppendPlacementNodeIntoContainer(
   finishedWork: FiberNode,
   hostParent: Container,
+  before?: Instance | null,
 ) {
   // 找到当前fiber节点对应的stateNode
 
@@ -180,18 +218,23 @@ function appendPlacementNodeIntoContainer(
     (finishedWork.tag === HostComponent) ||
     (finishedWork.tag === HostText)
   ) {
-    appendChildToContainer(hostParent, finishedWork.stateNode);
+    if (before) {
+      insertChildToContainer(finishedWork.stateNode, hostParent, before);
+    } else {
+      appendChildToContainer(hostParent, finishedWork.stateNode);
+    }
+
     return;
   }
 
   // 可能是<APP/> 这种类型的组件，需要寻找其child
   const child = finishedWork.child;
   if (child !== null) {
-    appendPlacementNodeIntoContainer(child, hostParent);
+    insertOrAppendPlacementNodeIntoContainer(child, hostParent);
     // 还需要把child的兄弟节点也插入到hostParent中去，
     let sibling = child.sibling;
     while (sibling !== null) {
-      appendPlacementNodeIntoContainer(sibling, hostParent);
+      insertOrAppendPlacementNodeIntoContainer(sibling, hostParent);
       sibling = sibling.sibling;
     }
 

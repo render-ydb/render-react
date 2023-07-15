@@ -28,6 +28,7 @@ const completeUnitOfWork = (fiber: FiberNode) => {
 
 const performUnitOfWork = (fiber: FiberNode) => {
   const next = beginWork(fiber); // next可能为子fiber或者null
+  console.log('next', next)
   // 返回了next，说明当前fiber已经完成工作，需要给memoizedProps赋值
   fiber.memoizedProps = fiber.pendingProps;
 
