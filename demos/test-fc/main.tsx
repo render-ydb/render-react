@@ -1,10 +1,11 @@
-debugger;
-import React, { useState } from 'react'
+// @ts-ignore
+import React, { useState ,__SECRET__INTERNALS__DO_NOT__USE__OR__YOU__WILL_FIRED} from 'react'
 import ReactDOM from 'react-dom/client'
 
 const App = () => {
   const [num,setNum] = useState(1);
-  const [str,setStr] = useState('render')
+  const [str,setStr] = useState('render');
+  console.log("__SECRET__INTERNALS__DO_NOT__USE__OR__YOU__WILL_FIRED",__SECRET__INTERNALS__DO_NOT__USE__OR__YOU__WILL_FIRED)
   return (
     // @ts-ignore
     <div key={1111}>

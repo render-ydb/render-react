@@ -20,6 +20,17 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 
   }
 
+  function deleteRemainingChildren(
+    returnFiber: FiberNode,
+    currentFirstChild: FiberNode | null,
+  ) {
+    let childToDelete = currentFirstChild;
+    while (childToDelete !== null) {
+      deleteChild(returnFiber, childToDelete);
+      childToDelete = childToDelete.sibling;
+    }
+  }
+
   function reconcileSingleElement(
     returnFiber: FiberNode,
     currentFiber: FiberNode | null,
@@ -27,7 +38,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
   ) {
 
     // update
-    work: if (currentFiber !== null) {
+    while (currentFiber !== null) {
       const key = element.key;
       if (currentFiber.key === key) { // key相同
         if (element.$$typeof === REACT_ELEMENT_TYPE) {
@@ -35,18 +46,21 @@ function ChildReconciler(shouldTrackEffects: boolean) {
             // 复用当前fiber
             const existing = useFiber(currentFiber, element.props);
             existing.return = returnFiber;
+            // 当前节点可复用, 标记剩下的节点删除
+            deleteRemainingChildren(returnFiber, currentFiber.sibling);
             return existing
           }
-          // 删除旧fiber
-          deleteChild(returnFiber, currentFiber);
-          break work;
+          // key相同，type不同，删除所有旧的
+          deleteRemainingChildren(returnFiber, currentFiber);
+          break;
         } else if (__DEV__) {
           console.warn('为实现的react类型');
-          break work;
+          break;
         }
       } else {
-        // 删除旧fiber
+        // key不同
         deleteChild(returnFiber, currentFiber);
+        currentFiber = currentFiber.sibling;
       }
     }
 
@@ -64,14 +78,16 @@ function ChildReconciler(shouldTrackEffects: boolean) {
     content: string | number,
   ) {
     // update
-    if (currentFiber !== null) {
+    while (currentFiber !== null) {
       if (currentFiber.tag === HostText) {
         // 类型没有改变
         const existing = useFiber(currentFiber, { content });
         existing.return = returnFiber;
+        deleteRemainingChildren(returnFiber, currentFiber.sibling);
         return existing;
       }
       deleteChild(returnFiber, currentFiber);
+      currentFiber = currentFiber.sibling;
     }
 
     // mount
