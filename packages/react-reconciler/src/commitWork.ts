@@ -95,6 +95,7 @@ function commitDeletion(childToDelete: FiberNode) {
         recordHostChildrenToDelete(rootChildrenToDelete, unmountFiber);
         return;
       case FunctionConponent:
+        // recordHostChildrenToDelete(rootChildrenToDelete, unmountFiber);
         // TODO 解绑ref 处理useEffect的unmount回调处理
         return;
 

@@ -21,11 +21,17 @@ const App = () => {
       // https://github.com/BetaSu/big-react/commit/
 
     ];
-  console.log("arr", arr)
+  // console.log("arr", arr)
   return (
     <div style={{ "backgroundColor": "red" }} key={'111'} onClick={() => { setNum(num + 1) }}>
-      <li>a</li>
-      <li>b</li>
+      {
+        num % 2 == 0 && <>
+          <p>1</p>
+          <p>2</p>
+
+          <Child />
+        </>
+      }
       {arr}
     </div>
   )
@@ -33,18 +39,18 @@ const App = () => {
 
 const Child = (props) => {
   return (
-    <ul>
-      {/* {arr} */}
-      {props.children}
-    </ul>
+    <>
+      <h1>1</h1>
+      <h1>2</h1>
+    </>
   )
 }
-console.log("jsx",(
-  <>
-  <p>1</p>
-  <p>2</p>
-  </>
-))
+// console.log("jsx", (
+//   <>
+//     <p>1</p>
+//     <p>2</p>
+//   </>
+// ))
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   // @ts-ignore

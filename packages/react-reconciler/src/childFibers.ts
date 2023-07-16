@@ -260,13 +260,13 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 
   ) {
     // 判断fragment
-    const isUnkeyedTopLevelFrgment =
+    const isUnkeyedTopLevelFragment =
       typeof newChild === 'object' &&
       newChild !== null &&
       newChild.type === REACT_FRAGMENT_TYPE &&
       newChild.key === null;
-    if (isUnkeyedTopLevelFrgment) {
-      newChild = newChild.props.child;
+    if (isUnkeyedTopLevelFragment) {
+      newChild = newChild.props.children;
     }
 
     if (typeof newChild === 'object' && newChild !== null) {
