@@ -1,7 +1,7 @@
 import { ReactElementType } from 'shared/ReactTypes';
 import { FiberNode } from './fiber';
 import { UpdateQueue, processUpdateQueue } from './updateQueue';
-import { FunctionConponent, HostComponent, HostRoot, HostText } from './workTags';
+import { FunctionConponent, HostComponent, HostRoot, HostText, Fragment } from './workTags';
 import { mountChildFibers, renconcileChildFibers } from './childFibers';
 import { renderWithHooks } from './fiberHooks';
 
@@ -17,12 +17,20 @@ export const beginWork = (wip: FiberNode): FiberNode | null => {
       return null
     case FunctionConponent:
       return updateFunctionComponent(wip);
+    case Fragment:
+      return updateFragment(wip);
     default:
       if (__DEV__) {
         console.warn('beginWork为实现的类型', wip.tag)
       }
       return null
   }
+}
+
+function updateFragment(wip: FiberNode) {
+  const nextChildren = wip.pendingProps;
+  reconcileChildren(wip, nextChildren);
+  return wip.child;
 }
 
 // 1.计算状态的最新值

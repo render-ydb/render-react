@@ -58,25 +58,41 @@ const commitMutationEffectOnFiber = (finishedWork: FiberNode) => {
   }
 }
 
+function recordHostChildrenToDelete(
+  childToDelete: Array<FiberNode>,
+  unmountFiber: FiberNode,
+) {
+  // 1. 找到第一个root host节点
+  let lastOne = childToDelete[childToDelete.length - 1];
+  // 2. 每找到一个host节点，判断是不是1步的兄弟节点
+  if (!lastOne) {
+    childToDelete.push(unmountFiber);
+  } else {
+    let node = lastOne.sibling;
+    while (node !== null) {
+      if (unmountFiber === node) {
+        childToDelete.push(unmountFiber);
+      }
+      node = node.sibling;
+    }
+  }
+
+}
+
+
 function commitDeletion(childToDelete: FiberNode) {
 
-  let rootHostNode: FiberNode | null = null; // 提升到全局是不是会减少遍历的次数
-
-
+  const rootChildrenToDelete: Array<FiberNode> = [];
   // 递归子树
   commitNestedComponent(childToDelete, (unmountFiber) => {
     switch (unmountFiber.tag) {
       case HostComponent:
-        if (rootHostNode === null) {
-          rootHostNode = unmountFiber;
-        }
+        recordHostChildrenToDelete(rootChildrenToDelete, unmountFiber);
         // TODO 解绑ref
         return;
 
       case HostText:
-        if (rootHostNode === null) {
-          rootHostNode = unmountFiber;
-        }
+        recordHostChildrenToDelete(rootChildrenToDelete, unmountFiber);
         return;
       case FunctionConponent:
         // TODO 解绑ref 处理useEffect的unmount回调处理
@@ -91,11 +107,13 @@ function commitDeletion(childToDelete: FiberNode) {
   });
 
   // 移除rootHostNode的DOM
-  if (rootHostNode !== null) {
+  if (rootChildrenToDelete.length) {
     const hostParent = getHostParent(childToDelete);
     if (hostParent !== null) {
-      // 应该是传入stateNode
-      removeChild((rootHostNode as FiberNode).stateNode, hostParent)
+      rootChildrenToDelete.forEach(node=>{
+        removeChild(node.stateNode, hostParent)
+      })
+
     }
   }
   // GC
@@ -153,7 +171,7 @@ const commitPlacement = (finishedWork: FiberNode) => {
 
 function getHostSibling(fibber: FiberNode): Instance | null {
   let node: FiberNode = fibber;
-
+  console.log('fibber', fibber)
   findSibling: while (true) {
 
     while (node.sibling === null) {
