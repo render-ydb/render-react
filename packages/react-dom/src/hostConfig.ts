@@ -10,7 +10,7 @@ export type TextInstance = Text;
 // @ts-ignore
 export const createInstance = (type: string, props: Props): Instance => {
     const element = document.createElement(type) as unknown;
-    updateFiberProps(element as DOMElement,props)
+    updateFiberProps(element as DOMElement, props)
     return element as DOMElement;
 }
 /* eslint-disable */
@@ -38,7 +38,7 @@ export const commitUpdate = (fiber: FiberNode) => {
     switch (fiber.tag) {
         case HostText:
             const text = fiber.memoizedProps.content;
-            commitTextUpdate(fiber.stateNode,text);
+            commitTextUpdate(fiber.stateNode, text);
             break;
         case HostComponent:
 
@@ -46,8 +46,8 @@ export const commitUpdate = (fiber: FiberNode) => {
 
         default:
             if (__DEV__) {
-                console.warn("未实现的Update",fiber);
-                
+                console.warn("未实现的Update", fiber);
+
             }
             break;
     }
@@ -57,14 +57,21 @@ export function commitTextUpdate(textInstance: TextInstance, content: string) {
     textInstance.textContent = content;
 }
 
-export function removeChild(child:Instance|TextInstance,container:Container) {
+export function removeChild(child: Instance | TextInstance, container: Container) {
     container.removeChild(child);
 }
 
 export function insertChildToContainer(
-    child:Instance,
-    container:Container,
-    before:Instance
+    child: Instance,
+    container: Container,
+    before: Instance
 ) {
-    container.insertBefore(child,before)
+    container.insertBefore(child, before)
 }
+
+export const scheduleMicroTask =
+    typeof queueMicrotask === 'function'
+        ? queueMicrotask
+        : typeof Promise === 'function'
+            ? (callback: (...args: any) => void) => Promise.resolve(null).then(callback)
+            : setTimeout;

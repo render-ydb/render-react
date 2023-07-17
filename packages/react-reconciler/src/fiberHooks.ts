@@ -4,6 +4,7 @@ import internal from 'shared/internals';
 import { UpdateQueue, createUpdate, createUpdateQueue, enqueueUpdate, processUpdateQueue } from './updateQueue';
 import { Action } from 'shared/ReactTypes';
 import { scheduleUpdateOnFiber } from './workLoop';
+import { Lane, NoLane, requestUpdateLanes } from './fiberLanes';
 
 const { currentDispatcher } = internal;
 
@@ -11,7 +12,8 @@ const { currentDispatcher } = internal;
 let currentlyRenderingFiber: FiberNode | null = null;
 // 当前正在处理的Hook
 let workInProgressHook: Hook | null = null;
-let currentHook: Hook | null = null
+let currentHook: Hook | null = null;
+let renderLane: Lane = NoLane;
 
 
 // Hook的数据结构
@@ -21,12 +23,13 @@ interface Hook {
   next: Hook | null;
 }
 
-export const renderWithHooks = (wip: FiberNode) => {
+export const renderWithHooks = (wip: FiberNode, lane: Lane) => {
 
   // 赋值操作
   currentlyRenderingFiber = wip;
   // 重置操作
   wip.memoizedState = null;
+  renderLane = lane;
 
   const current = wip.alternate;
   if (current !== null) {
@@ -46,6 +49,7 @@ export const renderWithHooks = (wip: FiberNode) => {
   currentlyRenderingFiber = null;
   workInProgressHook = null;
   currentHook = null;
+  renderLane = NoLane;
   return children;
 }
 
@@ -66,9 +70,10 @@ function updateState<State>(): [State, Dispatch<State>] {
   // 计算新的state的逻辑
   const queue = hook.updateQueue as UpdateQueue<State>;
   const pending = queue.shared.pending;
+  queue.shared.pending = null;
 
   if (pending !== null) {
-    const { memoizedState } = processUpdateQueue(hook.memoizedState, pending);
+    const { memoizedState } = processUpdateQueue(hook.memoizedState, pending, renderLane);
     hook.memoizedState = memoizedState;
   }
 
@@ -150,15 +155,15 @@ function dispatchSetState<State>(
   updateQueue: UpdateQueue<State>,
   action: Action<State>,
 ) {
-  const update = createUpdate(action);
-
+  const lane = requestUpdateLanes();
+  const update = createUpdate(action, lane);
   enqueueUpdate(
     updateQueue,
     update,
   );
 
   // 触发更新流程
-  scheduleUpdateOnFiber(fiber);
+  scheduleUpdateOnFiber(fiber, lane);
 
 }
 

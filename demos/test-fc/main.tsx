@@ -23,16 +23,16 @@ const App = () => {
     ];
   // console.log("arr", arr)
   return (
-    <div style={{ "backgroundColor": "red" }} key={'111'} onClick={() => { setNum(num + 1) }}>
-      {
-        num % 2 == 0 && <>
-          <p>1</p>
-          <p>2</p>
-
-          <Child />
-        </>
+    <div style={{ "backgroundColor": "red" }} key={'111'} onClick={() => { 
+      setNum(num =>num+1);
+      setNum(num =>num+1);
+      setNum(num =>num+1)
+     }}>
+      {/* {
+        num % 2 == 0 &&  <p>1</p>
       }
-      {arr}
+      <p>2222</p> */}
+      {num}
     </div>
   )
 }

@@ -1,8 +1,8 @@
 import { Props, Key, Ref, ReactElementType } from 'shared/ReactTypes';
 import { FunctionConponent, HostComponent, WorkTag, Fragment } from './workTags';
 import { Flags, NoFlags } from './fiberFlags';
+import { Lanes, Lane, NoLane, NoLanes } from './fiberLanes';
 import { Container } from 'hostConfig';
-import { REACT_FRAGMENT_TYPE } from 'shared/ReactSymbols';
 
 
 export class FiberNode {
@@ -60,11 +60,15 @@ export class FiberRootNode {
   container: Container;
   current: FiberNode;
   finishedWork: FiberNode | null; // 指向整个递归更新完成的HostRootFiber
+  pendingLanes: Lanes;
+  finishedLane: Lane;
   constructor(container: Container, hostRootFiber: FiberNode) {
     this.container = container;
     this.current = hostRootFiber;
     hostRootFiber.stateNode = this;
     this.finishedWork = null;
+    this.pendingLanes = NoLanes;
+    this.finishedLane = NoLane;
   }
 }
 

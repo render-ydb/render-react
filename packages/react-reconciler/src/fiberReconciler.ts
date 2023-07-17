@@ -4,6 +4,7 @@ import { HostRoot } from './workTags';
 import { UpdateQueue, createUpdate, createUpdateQueue, enqueueUpdate } from './updateQueue';
 import { ReactElementType } from 'shared/ReactTypes';
 import { scheduleUpdateOnFiber } from './workLoop';
+import { requestUpdateLanes } from './fiberLanes';
 
 // 例如ReactDom.createRoot方法调用就会使用createContainer函数
 // 创建FiberRootNode
@@ -20,12 +21,13 @@ export const updateConintaer = (
   element: ReactElementType | null,
   root: FiberRootNode,
 ) => {
+  const lane = requestUpdateLanes();
   const hostRootFiber = root.current;
-  const update = createUpdate<ReactElementType | null>(element);
+  const update = createUpdate<ReactElementType | null>(element, lane);
   enqueueUpdate(
     hostRootFiber.updateQueue as UpdateQueue<ReactElementType | null>,
     update,
   );
-  scheduleUpdateOnFiber(hostRootFiber);
+  scheduleUpdateOnFiber(hostRootFiber, lane);
   return element;
 }
