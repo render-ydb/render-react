@@ -41,7 +41,7 @@ function updateHostRoot(wip: FiberNode, renderLane: Lane) {
   const updateQueue = wip.updateQueue as UpdateQueue<ReactElementType>;
   const pending = updateQueue.shared.pending;
   updateQueue.shared.pending = null;
-  // 最新状态
+
   const { memoizedState } = processUpdateQueue(baseState, pending, renderLane);
   // 在这里对应 RenderDom.creareRoot(root).render(<APP/>) 中APP对应的reactElement
   // APP是HostRootFiber的子节点

@@ -21,6 +21,7 @@ export const updateConintaer = (
   element: ReactElementType | null,
   root: FiberRootNode,
 ) => {
+  // 目前返回同步优先级
   const lane = requestUpdateLanes();
   const hostRootFiber = root.current;
   const update = createUpdate<ReactElementType | null>(element, lane);

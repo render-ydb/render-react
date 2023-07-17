@@ -5,7 +5,9 @@ export function scheduleSyncCallback(callback: (...arg: any) => void) {
   if (syncQueue === null) {
     syncQueue = [callback]
   } else {
-    syncQueue.push(callback);
+    // 目前只需要保存一次就行啦
+    syncQueue = [callback]
+    // syncQueue.push(callback);
   }
 }
 
