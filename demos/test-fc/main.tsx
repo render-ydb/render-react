@@ -1,56 +1,37 @@
 // @ts-ignore
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 
-const App = () => {
-  const [num, setNum] = useState(100);
-  const arr = num % 2 == 0 ?
-    [
-      <li key='1'>1</li>,
-      <li key='2'>2</li>,
-      <li key='3'>3</li>,
-      <li key='4'>4</li>,
-      <li key='5'>5</li>,
-    ] :
-    [
-      <li key='1'>1</li>,
-      <li key='2'>2</li>,
-      <li key='4'>4</li>,
-      <li key='3'>3</li>,
-      <li key='5'>5</li>,
-      // https://github.com/BetaSu/big-react/commit/
+function App() {
+  const [num, updateNum] = useState(0);
+  useEffect(() => {
+    console.log('App mount');
+  }, []);
 
-    ];
-  // console.log("arr", arr)
+  useEffect(() => {
+    console.log('num change create', num); 
+    return () => {
+      console.log('num change destroy', num);
+    };
+  }, [num]); //
+
   return (
-    <div style={{ "backgroundColor": "red" }} key={'111'} onClick={() => { 
-      setNum(num =>num+1);
-      setNum(num =>num+1);
-      setNum(num =>num+1)
-     }}>
-      {/* {
-        num % 2 == 0 &&  <p>1</p>
-      }
-      <p>2222</p> */}
-      {num}
+    <div onClick={() => updateNum(num + 1)}>
+      {num%2 === 0 ? <Child /> : 'noop'}
+      {/* {num} */}
+     
     </div>
-  )
+  );
 }
 
-const Child = (props) => {
-  return (
-    <>
-      <h1>1</h1>
-      <h1>2</h1>
-    </>
-  )
+function Child() {
+  useEffect(() => {
+    console.log('Child mount');
+    return () => console.log('Child unmount');
+  }, []);
+
+  return 'i am child';
 }
-// console.log("jsx", (
-//   <>
-//     <p>1</p>
-//     <p>2</p>
-//   </>
-// ))
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   // @ts-ignore

@@ -8,6 +8,7 @@ module.exports = getESLintConfig('common-ts', {
         "import/named":"off",
         "no-return-assign":"off",
         "react-hooks/rules-of-hooks":"off",
-        "@typescript-eslint/no-unused-expressions":"off"
+        "@typescript-eslint/no-unused-expressions":"off",
+        "@typescript-eslint/no-invalid-void-type":"off"
     }
 });
