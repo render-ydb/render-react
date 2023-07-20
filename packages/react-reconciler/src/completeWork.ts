@@ -20,7 +20,7 @@ export const completeWork = (wip: FiberNode) => {
 
       if (current !== null && wip.stateNode) {
         // update
-        updateFiberProps(wip.stateNode, newProps);
+        markUpdate(wip)
 
       } else { // mount阶段
         // 1. 构建DOM树

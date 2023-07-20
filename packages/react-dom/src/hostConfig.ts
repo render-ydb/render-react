@@ -38,12 +38,9 @@ export const commitUpdate = (fiber: FiberNode) => {
     switch (fiber.tag) {
         case HostText:
             const text = fiber.memoizedProps.content;
-            commitTextUpdate(fiber.stateNode, text);
-            break;
+            return commitTextUpdate(fiber.stateNode, text);
         case HostComponent:
-
-            break;
-
+            return updateFiberProps(fiber.stateNode, fiber.memoizedProps);
         default:
             if (__DEV__) {
                 console.warn("未实现的Update", fiber);
