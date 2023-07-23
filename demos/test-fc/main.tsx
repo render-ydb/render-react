@@ -3,34 +3,23 @@ import React, { useState,useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 
 function App() {
-  const [num, updateNum] = useState(0);
-  useEffect(() => {
-    console.log('App mount');
-  }, []);
-
-  useEffect(() => {
-    console.log('num change create', num); 
-    return () => {
-      console.log('num change destroy', num);
-    };
-  }, [num]); //
-
+  const [num, updateNum] = useState(100);
   return (
-    <div onClick={() => updateNum(num + 1)}>
-      {num%2 === 0 ? <Child /> : 'noop'}
-      {/* {num} */}
-     
-    </div>
+    <ul onClick={()=>updateNum(50)}>
+      {
+        new Array(num).fill(0).map((_,i)=>{
+          return <Child key={i}>{i}</Child>
+        })
+      }
+    </ul>
   );
 }
 
-function Child() {
-  useEffect(() => {
-    console.log('Child mount');
-    return () => console.log('Child unmount');
-  }, []);
+function Child({children}) {
+  const now = performance.now();
+  while(performance.now()-now <4) {}
 
-  return 'i am child';
+  return <li>{children}</li>
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

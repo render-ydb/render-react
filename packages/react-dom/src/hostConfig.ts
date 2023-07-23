@@ -16,7 +16,10 @@ export const createInstance = (type: string, props: Props): Instance => {
 /* eslint-disable */
 // @ts-ignore
 export const createTextInstance = (content: string) => {
-    return document.createTextNode(content);
+  
+    const element = document.createTextNode(content);
+    console.log("content",element)
+    return element;
 }
 /* eslint-disable */
 // @ts-ignore
