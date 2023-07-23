@@ -8,7 +8,7 @@ import { Lane, NoLane, requestUpdateLanes } from './fiberLanes';
 import { Flags, PassiveEffect } from './fiberFlags';
 import { HookHasEffect, Passive } from './hookEffectTags';
 
-const { currentDispatcher } = internal;
+const { currentDispatcher, currentBatchConfig } = internal;
 
 // 当前正在rending的fiber
 let currentlyRenderingFiber: FiberNode | null = null;
@@ -80,6 +80,7 @@ const HooksDispatcherOnMount: Dispatcher = {
   useState: mountState,
   // @ts-ignore
   useEffect: mountEffect,
+  useTransition: mountTransition,
 }
 
 // 创建update阶段时候的Dispatcher
@@ -87,6 +88,7 @@ const HooksDispatcherOnUpdate: Dispatcher = {
   useState: updateState,
   // @ts-ignore
   useEffect: updateEffect,
+  useTransition: updateTransition,
 }
 
 function updateState<State>(): [State, Dispatch<State>] {
@@ -125,12 +127,14 @@ function updateState<State>(): [State, Dispatch<State>] {
     current.baseQueue = pending;
     queue.shared.pending = null;
 
-    if (baseQueue !== null) {
-      const { memoizedState, baseQueue: newBaseQueu, baseState: newBaseState } = processUpdateQueue(baseState, baseQueue, renderLane);
-      hook.memoizedState = memoizedState;
-      hook.baseQueue = newBaseQueu;
-      hook.baseState = newBaseState;
-    }
+
+  }
+
+  if (baseQueue !== null) {
+    const { memoizedState, baseQueue: newBaseQueu, baseState: newBaseState } = processUpdateQueue(baseState, baseQueue, renderLane);
+    hook.memoizedState = memoizedState;
+    hook.baseQueue = newBaseQueu;
+    hook.baseState = newBaseState;
   }
 
   return [hook.memoizedState, queue.dispatch as Dispatch<State>];
@@ -276,6 +280,36 @@ function createFCUpdateQuque<State>() {
   return updateQueue;
 }
 
+function mountTransition(): [boolean, (cb: () => void) => void] {
+  const [isPending, setPending] = mountState(false);
+  const hook = mountWorkInProgressHook();
+  const start = startTransition.bind(null, setPending);
+  hook.memoizedState = start;
+  return [isPending, start]
+}
+
+function startTransition(setPending: Dispatch<boolean>, cb: () => void) {
+  // 触发同步更新
+  setPending(true); // 来回切换会卡
+
+  // 修改优先级
+  const prevTransition = currentBatchConfig.transition;
+  currentBatchConfig.transition = 1;
+
+  cb();
+  setPending(false);
+
+  currentBatchConfig.transition = prevTransition;
+}
+
+function updateTransition(): [boolean, (cb: () => void) => void] {
+  const [isPending] = updateState<boolean>();
+  const hook = updateWorkInProgressHook();
+  const start = hook.memoizedState;
+
+  return [isPending, start]
+}
+
 function mountState<State>(
   initialState: State | (() => State),
 ): [State, Dispatch<State>] {
@@ -292,7 +326,7 @@ function mountState<State>(
   const queue = createUpdateQueue<State>();
   hook.updateQueue = queue;
   hook.memoizedState = memoizedState;
-
+  hook.baseState = memoizedState;
   // @ts-ignore
   const dispatch = dispatchSetState.bind(null, currentlyRenderingFiber, queue);
   queue.dispatch = dispatch;
