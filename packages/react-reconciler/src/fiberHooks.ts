@@ -81,6 +81,7 @@ const HooksDispatcherOnMount: Dispatcher = {
   // @ts-ignore
   useEffect: mountEffect,
   useTransition: mountTransition,
+  useRef: mountRef,
 }
 
 // 创建update阶段时候的Dispatcher
@@ -89,6 +90,18 @@ const HooksDispatcherOnUpdate: Dispatcher = {
   // @ts-ignore
   useEffect: updateEffect,
   useTransition: updateTransition,
+  useRef: updateRef,
+}
+function updateRef() {
+  const hook = updateWorkInProgressHook();
+  return hook.memoizedState;
+}
+
+function mountRef<T>(initilaVale: T): { current: T } {
+  const hook = mountWorkInProgressHook();
+  const ref = { current: initilaVale };
+  hook.memoizedState = ref;
+  return ref;
 }
 
 function updateState<State>(): [State, Dispatch<State>] {

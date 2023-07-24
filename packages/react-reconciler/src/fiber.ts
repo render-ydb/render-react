@@ -57,7 +57,7 @@ export class FiberNode {
   }
 }
 
-export interface PendingPassiveEffects{
+export interface PendingPassiveEffects {
   unmount: Array<Effect>;
   update: Array<Effect>;
 }
@@ -70,7 +70,7 @@ export class FiberRootNode {
   pendingLanes: Lanes;
   finishedLane: Lane;
 
-  callbackNode: CallbackNode| null;
+  callbackNode: CallbackNode | null;
   callbackPiority: Lane;
 
   pendingPassiveEffects: PendingPassiveEffects;
@@ -115,14 +115,16 @@ export const createWorkInProgress = (
   wip.type = current.type;
   wip.updateQueue = current.updateQueue;
   wip.child = current.child;
+
   wip.memoizedProps = current.memoizedProps;
   wip.memoizedState = current.memoizedState;
+  wip.ref = current.ref;
 
   return wip;
 }
 
 export const createFiberFromElement = (element: ReactElementType): FiberNode => {
-  const { type, key, props } = element;
+  const { type, key, props, ref } = element;
   let fiberTag: WorkTag = FunctionConponent;
   // <div></div> => type为'div'
   if (typeof type === 'string') {
@@ -132,9 +134,10 @@ export const createFiberFromElement = (element: ReactElementType): FiberNode => 
   }
   const fiber = new FiberNode(fiberTag, props, key);
   fiber.type = type;
+  fiber.ref = ref;
   return fiber
 }
 
-export const createFiberFromFragment = (elements: any[], key: Key): FiberNode=>{
+export const createFiberFromFragment = (elements: any[], key: Key): FiberNode => {
   return new FiberNode(Fragment, elements, key)
 }

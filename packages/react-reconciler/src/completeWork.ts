@@ -1,8 +1,12 @@
 import { updateFiberProps } from 'react-dom/src/SyntheticEvent';
 import { FiberNode } from './fiber';
-import { NoFlags, Update } from './fiberFlags';
+import { NoFlags, Ref, Update } from './fiberFlags';
 import { FunctionConponent, HostComponent, HostRoot, HostText, Fragment } from './workTags';
 import { Container, appendInitialChild, createInstance, createTextInstance } from 'hostConfig';
+
+function markRef(fiber: FiberNode) {
+  fiber.flags |= Ref;
+}
 
 function markUpdate(fiber: FiberNode) {
   fiber.flags |= Update;
@@ -20,7 +24,12 @@ export const completeWork = (wip: FiberNode) => {
 
       if (current !== null && wip.stateNode) {
         // update
-        markUpdate(wip)
+        markUpdate(wip);
+        // 标记ref
+        if (current.ref !== wip.ref) {
+          markRef(wip);
+        }
+
 
       } else { // mount阶段
         // 1. 构建DOM树
@@ -28,6 +37,10 @@ export const completeWork = (wip: FiberNode) => {
         // 2. 将DOM插入到DOM树中
         appendAllChildren(instance, wip);
         wip.stateNode = instance;
+        // 标记ref
+        if (wip.ref !== null) {
+          markRef(wip);
+        }
       }
       bubbleProperties(wip);
       return null;

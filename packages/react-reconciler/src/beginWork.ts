@@ -5,6 +5,7 @@ import { FunctionConponent, HostComponent, HostRoot, HostText, Fragment } from '
 import { mountChildFibers, renconcileChildFibers } from './childFibers';
 import { renderWithHooks } from './fiberHooks';
 import { Lane } from './fiberLanes';
+import { Ref } from './fiberFlags';
 
 // 创建当前fiber的子fiber，并返回
 // 当前还没有处理fiberNode的sibling节点，todo
@@ -58,6 +59,7 @@ function updateHostRoot(wip: FiberNode, renderLane: Lane) {
 function updateHostComponent(wip: FiberNode) {
   const nextProps = wip.pendingProps;
   const nextChildren = nextProps.children;
+  markRef(wip.alternate, wip);
   reconcileChildren(wip, nextChildren);
   return wip.child;
 }
@@ -83,4 +85,14 @@ function reconcileChildren(wip: FiberNode, children: ReactElementType | null) {
   }
 
 
+}
+
+function markRef(current: FiberNode | null, wip: FiberNode) {
+  const ref = wip.ref;
+  if (
+    (current === null && ref !== null) ||
+    (current !== null && current.ref !== ref)
+  ) {
+    wip.flags |= Ref
+  }
 }

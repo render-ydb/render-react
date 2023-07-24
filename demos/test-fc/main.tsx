@@ -1,25 +1,34 @@
 // @ts-ignore
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect,useRef } from 'react'
 import ReactDOM from 'react-dom/client'
 
 function App() {
-  const [num, updateNum] = useState(100);
+  const [isDel, del] = useState(false);
+  const divRef = useRef(null);
+  const numRef = useRef(0);
+  console.warn("render divRef",divRef.current);
+  console.warn("render numRef",numRef.current);
+  
+  const handleClick= ()=>{
+    // alert(1)
+    numRef.current =  numRef.current+1;
+    del(true)
+  }
+  useEffect(()=>{
+    console.warn("useEffect divRef",divRef.current)
+    console.warn("useEffect numRef",numRef.current)
+  },[])
+
   return (
-    <ul onClick={()=>updateNum(50)}>
-      {
-        new Array(num).fill(0).map((_,i)=>{
-          return <Child key={i}>{i}</Child>
-        })
-      }
-    </ul>
+    <div ref={divRef} onClick={handleClick}>
+      {isDel ? 'null': <Child />}
+    </div>
   );
 }
 
-function Child({children}) {
-  const now = performance.now();
-  while(performance.now()-now <4) {}
 
-  return <li>{children}</li>
+function Child() {
+   return <p ref={dom=>console.warn("dom is:",dom)}>Child</p>
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

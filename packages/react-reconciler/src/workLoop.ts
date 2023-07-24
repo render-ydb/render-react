@@ -3,7 +3,7 @@ import { beginWork } from './beginWork';
 import { completeWork } from './completeWork';
 import { HostRoot } from './workTags';
 import { MutationMask, NoFlags, PassiveMask } from './fiberFlags';
-import { commitHookEffectListCreate, commitHookEffectListDestroy, commitHookEffectListUnmount, commitMutationEffects } from './commitWork';
+import { commitHookEffectListCreate, commitHookEffectListDestroy, commitHookEffectListUnmount, commitLayoutEffects, commitMutationEffects } from './commitWork';
 import { Lane, NoLane, SyncLane, getHighestPriorityLane, lanesToSchedulerPriority, markRootFinished, mergeLanes } from './fiberLanes';
 import { flushSyncCallbacks, scheduleSyncCallback } from './syncTaskQueue';
 import { scheduleMicroTask } from 'hostConfig';
@@ -335,6 +335,7 @@ const commitRoot = (root: FiberRootNode) => {
     commitMutationEffects(finishedWork, root);
     root.current = finishedWork;
     // 3. layout
+    commitLayoutEffects(finishedWork, root);
 
   } else {
     root.current = finishedWork;
