@@ -2,7 +2,7 @@ import { Dispatch, Dispatcher } from 'react/src/currentDispatcher';
 import { FiberNode } from './fiber'
 import internal from 'shared/internals';
 import { Update, UpdateQueue, createUpdate, createUpdateQueue, enqueueUpdate, processUpdateQueue } from './updateQueue';
-import { Action } from 'shared/ReactTypes';
+import { Action, ReactContext } from 'shared/ReactTypes';
 import { scheduleUpdateOnFiber } from './workLoop';
 import { Lane, NoLane, requestUpdateLanes } from './fiberLanes';
 import { Flags, PassiveEffect } from './fiberFlags';
@@ -82,6 +82,7 @@ const HooksDispatcherOnMount: Dispatcher = {
   useEffect: mountEffect,
   useTransition: mountTransition,
   useRef: mountRef,
+  useContext: readContext,
 }
 
 // 创建update阶段时候的Dispatcher
@@ -91,6 +92,7 @@ const HooksDispatcherOnUpdate: Dispatcher = {
   useEffect: updateEffect,
   useTransition: updateTransition,
   useRef: updateRef,
+  useContext: readContext,
 }
 function updateRef() {
   const hook = updateWorkInProgressHook();
@@ -386,4 +388,14 @@ function mountWorkInProgressHook(): Hook {
     workInProgressHook = hook; // 指向下一个hook
   }
   return workInProgressHook;
+}
+
+function readContext<T>(context: ReactContext<T>): T {
+  const consumer = currentlyRenderingFiber;
+  if (consumer === null) {
+    throw new Error('只能在函数组件中调用useContext');
+  }
+  const value = context._currentValue;
+  return value;
+
 }

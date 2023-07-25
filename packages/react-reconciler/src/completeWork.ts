@@ -1,8 +1,9 @@
 import { updateFiberProps } from 'react-dom/src/SyntheticEvent';
 import { FiberNode } from './fiber';
 import { NoFlags, Ref, Update } from './fiberFlags';
-import { FunctionConponent, HostComponent, HostRoot, HostText, Fragment } from './workTags';
+import { FunctionConponent, HostComponent, HostRoot, HostText, Fragment, ContextProvider } from './workTags';
 import { Container, appendInitialChild, createInstance, createTextInstance } from 'hostConfig';
+import { popProvider } from './fiberContext';
 
 function markRef(fiber: FiberNode) {
   fiber.flags |= Ref;
@@ -67,6 +68,10 @@ export const completeWork = (wip: FiberNode) => {
       bubbleProperties(wip);
       return null;
     case Fragment:
+      bubbleProperties(wip);
+      return null;
+    case ContextProvider:
+      popProvider(wip.type._context)
       bubbleProperties(wip);
       return null;
 

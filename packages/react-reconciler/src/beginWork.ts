@@ -1,11 +1,12 @@
 import { ReactElementType } from 'shared/ReactTypes';
 import { FiberNode } from './fiber';
 import { UpdateQueue, processUpdateQueue } from './updateQueue';
-import { FunctionConponent, HostComponent, HostRoot, HostText, Fragment } from './workTags';
+import { FunctionConponent, HostComponent, HostRoot, HostText, Fragment, ContextProvider } from './workTags';
 import { mountChildFibers, renconcileChildFibers } from './childFibers';
 import { renderWithHooks } from './fiberHooks';
 import { Lane } from './fiberLanes';
 import { Ref } from './fiberFlags';
+import { pushProvider } from './fiberContext';
 
 // 创建当前fiber的子fiber，并返回
 // 当前还没有处理fiberNode的sibling节点，todo
@@ -21,12 +22,26 @@ export const beginWork = (wip: FiberNode, renderLane: Lane): FiberNode | null =>
       return updateFunctionComponent(wip, renderLane);
     case Fragment:
       return updateFragment(wip);
+    case ContextProvider:
+      return updateContextprovider(wip);
     default:
       if (__DEV__) {
         console.warn('beginWork为实现的类型', wip.tag)
       }
       return null
   }
+}
+
+function updateContextprovider(wip: FiberNode) {
+  const providerType = wip.type;
+  const context = providerType._context;
+  const newProps = wip.pendingProps;
+
+  pushProvider(context, newProps.value);
+
+  const nextChildren = newProps.children;
+  reconcileChildren(wip, nextChildren);
+  return wip.child;
 }
 
 function updateFragment(wip: FiberNode) {

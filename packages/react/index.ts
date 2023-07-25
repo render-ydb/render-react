@@ -23,6 +23,14 @@ export const useRef: Dispatcher['useRef'] = (initilaVale) => {
   const dispatcher = resolveDispatcher();
   return dispatcher.useRef(initilaVale)
 }
+
+export const useContext: Dispatcher['useContext'] = (context) => {
+  const dispatcher = resolveDispatcher();
+  return dispatcher.useContext(context)
+}
+
+export { createContext } from './src/context'
+
 // 内部数据共享层
 export const __SECRET__INTERNALS__DO_NOT__USE__OR__YOU__WILL_FIRED = {
   currentDispatcher,

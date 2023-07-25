@@ -1,4 +1,4 @@
-// @ts-ignore
+
 import React, { useState,useEffect,useRef } from 'react'
 import ReactDOM from 'react-dom/client'
 
@@ -15,8 +15,10 @@ function App() {
     del(true)
   }
   useEffect(()=>{
-    console.warn("useEffect divRef",divRef.current)
-    console.warn("useEffect numRef",numRef.current)
+    console.log("create");
+    return ()=>{
+      console.log("destroy")
+    }
   },[])
 
   return (
