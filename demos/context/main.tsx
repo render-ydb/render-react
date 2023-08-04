@@ -15,13 +15,26 @@ const jsx = (
     <Cpn />
   </ctxA.Provider>
 );
-console.log("jsx", jsx);
-console.log(ctxA)
+const jsx1 = (
+  <p>1111</p>
+)
+// console.log("jsx1jsx1jsx1", jsx1);
 
 function App() {
+  const [num, setNum] = useState(0)
+  const handleClick = () => {
+    setNum(num + 1); // =>1
+    console.log("num", num);
+    setNum(num + 1);// =>1
+    console.log("num", num)
+    setNum(num + 1);// =>1
+    console.log("num", num);
+    // lane模型批处理
+  }
+  console.log('hahhah', num)
   return (
-    <div>
-    {jsx}
+    <div onClick={handleClick}>
+      {jsx}
     </div>
   );
 }
@@ -30,7 +43,7 @@ function App() {
 function Cpn() {
   const a = useContext(ctxA);
   const b = useContext(ctxB);
-  console.log("a",b)
+
 
   return (
     <div>

@@ -187,7 +187,6 @@ function updateWorkInProgressHook(): Hook {
   }
 
   if (workInProgressHook === null) {
-    // mount时候，第一次使用useState
     if (currentlyRenderingFiber === null) { // 说明没有在函数组件中使用useState
       throw new Error('Hooks只能在函数组件中执行')
     } else {
@@ -195,13 +194,10 @@ function updateWorkInProgressHook(): Hook {
       currentlyRenderingFiber.memoizedState = workInProgressHook; // 指向当前函数组件中hooks列表的第一个
     }
   } else {
-    // mounts时候 不是第一次使用hooks
     workInProgressHook.next = newHook;
     workInProgressHook = newHook; // 指向下一个hook
   }
   return workInProgressHook;
-
-
 }
 
 function mountEffect(create: EffectCallback | void, deps: EffectDeps) {
@@ -366,7 +362,6 @@ function dispatchSetState<State>(
 }
 
 function mountWorkInProgressHook(): Hook {
-  // if (workInProgressHoos)
   const hook: Hook = {
     memoizedState: null,
     updateQueue: null,
@@ -380,7 +375,8 @@ function mountWorkInProgressHook(): Hook {
       throw new Error('Hooks只能在函数组件中执行')
     } else {
       workInProgressHook = hook;
-      currentlyRenderingFiber.memoizedState = workInProgressHook; // 指向当前函数组件中hooks列表的第一个
+      // 指向当前函数组件中hooks列表的第一个
+      currentlyRenderingFiber.memoizedState = workInProgressHook;
     }
   } else {
     // mounts时候 不是第一次使用hooks

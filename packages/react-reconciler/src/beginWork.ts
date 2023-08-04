@@ -9,7 +9,6 @@ import { Ref } from './fiberFlags';
 import { pushProvider } from './fiberContext';
 
 // 创建当前fiber的子fiber，并返回
-// 当前还没有处理fiberNode的sibling节点，todo
 export const beginWork = (wip: FiberNode, renderLane: Lane): FiberNode | null => {
   switch (wip.tag) {
     case HostRoot: // HostFiberNode
