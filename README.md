@@ -5,7 +5,7 @@
 
 1. 单节点、多节点渲染
 2. 实现HostText组件（文本组件）
-3. 实现HostComponent组件 (元素标签组件，例如<div></div>)
+3. 实现HostComponent组件 (元素标签组件)
 4. 实现FunctionComponent组件（函数组件）
 5. 实现Fragment组件
 6. 实现ContextProvider组件 （context中的Provider组件）
